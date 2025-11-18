@@ -11,9 +11,10 @@ class AlienInvasion:
 
     def __init__(self):
         pygame.init()
+        self.clock = pygame.time.Clock()
         self.settings = Settings()
 
-        self.screen = pygame.display.set_mode((800,600))
+        self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
         self.settings.screen_height = self.screen.get_rect().width
         self.settings.screen_width = self.screen.get_rect().height
         pygame.display.set_caption("Alien Invasion")
@@ -33,6 +34,7 @@ class AlienInvasion:
             self.ship.update()
             self._update_bullets()
             self._update_screen()
+            self.clock.tick(60)
           
     def _check_events(self):
         #respond to key and mouse event
@@ -75,48 +77,50 @@ class AlienInvasion:
 
     def _create_fleet(self):
         #make an alien.
-
+    ##TODO: FIX CREATING ALIEN FLEET HORIZONTAL NOT VERTICAL
         alien=Alien(self)
-        alien_width, alien_height = alien.rect.size
-        # available_space_x = self.settings.screen_width - (2 * alien_width)
-        # number_aliens_x = available_space_x // (2 * alien_width)
-        # alien_width, alien_height = alien.rect.size
-        # available_space_x = self.settings.screen_width - (2 * alien_width)
-        # number_aliens_x = available_space_x // (2 * alien_width)
         
-        current_x, current_y = alien_width, alien_height
-        while current_y < (self.settings.screen_height - 3 * alien_height):
-            while current_x < (self.settings.screen_width - 2 * alien_width):
-                self._create_alien(current_x,current_y)
-                current_x +=2 * alien_width
+        alien_width, alien_height = alien.rect.size
+        available_space_x = self.settings.screen_width - (2 * alien_width)
+        number_aliens_x = available_space_x // (2 * alien_width)
+        
+        # current_x, current_y = alien_width, alien_height
+        # while current_y < (self.settings.screen_height - 3 * alien_height):
+        #     while current_x < (self.settings.screen_width - 2 * alien_width):
+        #         self._create_alien(current_x,current_y)
+        #         current_x +=2 * alien_width
 
-        # ship_height = self.ship.rect.height
-        # available_space_y = (self.settings.screen_height - (3 * alien_height) - ship_height)
-        # number_rows = available_space_y // (2 * alien_height)
+        ship_height = self.ship.rect.height
+        available_space_y = (self.settings.screen_height - (3 * alien_height) - ship_height)
+        number_rows = available_space_y // (2 * alien_height)
+
+
+        
       
         # for alien_number in range(number_aliens_x):
+            
         #     alien = Alien(self)
         #     alien.x = alien_width + 2 * alien_width * alien_number
         #     alien.rect.x = alien.x
         #     self.aliens.add(alien)
 
-        # for row_number in range(number_rows):
-        #     for alien_number in range(number_aliens_x):
-        #         self._create_alien(alien_number, row_number)
+        for row_number in range(number_rows):
+            for alien_number in range(number_aliens_x):
+                self._create_alien(alien_number, row_number)
 
-    # def _create_alien(self, x_postion, y_position):
+    def _create_alien(self, alien_number, row_number):
 
     #     new_alien= Alien(self)
     #     new_alien.x= x_postion
     #     new_alien.rect.x = x_postion
     #     new_alien.rect.y = y_position
     #     self.aliens.add(new_alien)
-
-    #     alien_width, alien_height = alien.rect.size
-    #     alien.x = alien_width + 2 * alien_width * alien_number
-    #     alien.rect.x = alien.x
-    #     alien.rect.y = alien_height + 2 * alien.rect.height * row_number
-    #     self.aliens.add(alien)
+        alien = Alien(self)
+        alien_width, alien_height = alien.rect.size
+        alien.x = alien_width + 2 * alien_width * alien_number
+        alien.rect.x = alien.x
+        alien.rect.y = alien_height + 2 * alien.rect.height * row_number
+        self.aliens.add(alien)
 
     def _update_screen(self):
         self.screen.fill(self.settings.bg_color)
